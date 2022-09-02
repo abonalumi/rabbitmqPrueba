@@ -7,6 +7,6 @@ Para que esta solución funcione se debe descargar la imagen de RabbitMQ para Do
 
 Correr la imagen de docker.
 
-Luego ejecutar el comando *dotnet run* dentro del directorio \Subscriptor
+Luego ejecutar el comando *dotnet run* dentro del directorio **\Subscriptor**
 
-Por último ejecutar el comando *dotnet run* dentro del directorio \Publicador
+Por último ejecutar el comando *dotnet run* dentro del directorio **\Publicador**
