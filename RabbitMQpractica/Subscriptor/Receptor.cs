@@ -2,27 +2,30 @@
 using RabbitMQ.Client.Events;
 using System.Text;
 
+// Crear una fábrica de conexión para crear la conexión del cliente con el servidor según explica
+// la documentación
 var factory = new ConnectionFactory() { HostName = "localhost" };
-
-using(var conexion = factory.CreateConnection())
+using(var connection = factory.CreateConnection())
+using(var canal = connection.CreateModel())
 {
-	using (var canal = conexion.CreateModel())
+	// Buscar la cola del canal con el nombre definido en el atributo queue.
+	// Si aún no existe, lo define con el nombre que se pasó como atributo.
+	canal.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+	// Se crea un consumidor para detectar los mensajes
+	var consumer = new EventingBasicConsumer(canal);
+	consumer.Received += (model, ea) =>
 	{
-		canal.QueueDeclare(queue: "Saludo", durable: false, autoDelete: false, arguments: null);
+		// Si encuentra un mensaje lo mete en un array.
+		var cuerpo = ea.Body.ToArray();
+		// Se codifica los bytes del array a cadena de texto.
+		var mensaje = Encoding.UTF8.GetString(cuerpo);
+		Console.WriteLine(" [x] Received {0}", mensaje);
+	};
 
-		var consumidor = new EventingBasicConsumer(canal);
+	// Finalmente se ejecuta la acción en el consumidor que debe mostrar el mensaje que recibió el objeto consumidor.
+	canal.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
 
-		consumidor.Received += (model, ea) =>
-		{
-			var cuerpo = ea.Body.ToArray();
-			var mensaje = Encoding.UTF8.GetString(cuerpo);
-
-			Console.WriteLine($"[x] {mensaje}");
-		};
-
-		canal.BasicConsume(queue:"Saludo",autoAck:true, consumer:consumidor);
-	}
+	Console.WriteLine(" Press [enter] to exit.");
+	Console.ReadLine();
 }
-
-Console.WriteLine("Presione una tecla para salir.");
-Console.ReadLine();
