@@ -7,7 +7,7 @@ using(var connection = fabrica.CreateConnection())
 using(var canal = connection.CreateModel())
 {
     // el canal permite que los mensajes lleguen a la cola Queue. Si la cola de mensaje no existe, se crea.
-    canal.QueueDeclare(queue: "hello",durable: false, 
+    canal.QueueDeclare(queue: "hola",durable: false, 
         exclusive: false, 
         autoDelete: false, 
         arguments: null);
@@ -16,12 +16,12 @@ using(var canal = connection.CreateModel())
     // se codifica el mensaje a bytes
     var cuerpo = Encoding.UTF8.GetBytes(mensaje);
     // se envía el mensaje
-    canal.BasicPublish(exchange: "", routingKey: "hello", basicProperties: null, body: cuerpo);
+    canal.BasicPublish(exchange: "", routingKey: "hola", basicProperties: null, body: cuerpo);
     // visualizar el mensaje enviado en consola para ver si la línea de ejecución llegó hasta este punto y qué se envió.
     Console.WriteLine("[x] Enviado {0}", mensaje);
 }
 
-Console.WriteLine("Presione una tecla para salir.");
+Console.WriteLine("Precionar [enter] para salir.");
 Console.ReadLine();
 
 
